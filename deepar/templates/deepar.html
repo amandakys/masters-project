@@ -1,4 +1,5 @@
 {% extends 'deepar_base.html' %}
+{% load static %}
 {% block head %}
 {{ block.super}}
     <meta charset="utf-8">
@@ -7,7 +8,7 @@
     <title>DeepAR</title>
     
     <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
-    <link rel="stylesheet" type="text/css" href="../../static/styles/index.css"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/index.css' %}"/>
 {% endblock %}
 {% block content %}
     <button id="recording-btn">Start/stop video recording</button>
@@ -19,21 +20,21 @@
     </div>
 
     <div class="effect-carousel">
-      <div><img class="thumb" src="../../static/thumbs/viking.png"></div>
-      <div><img class="thumb" src="../../static/thumbs/makeup.png"></div>
-      <div><img class="thumb" src="../../static/thumbs/makeup-split.png"></div>
-      <div><img class="thumb" src="../../static/thumbs/stallone.png"></div>
-      <div><img class="thumb" src="../../static/thumbs/flower_face.png"></div>
-      <div><img class="thumb" src="../../static/thumbs/galaxy.png"></div>
-      <div><img class="thumb" src="../../static/thumbs/humanoid.png"></div>
-      <div><img class="thumb" src="../../static/thumbs/devil_horns.png"></div>
-      <div><img class="thumb" src="../../static/thumbs/ping_pong.png"></div>
-      <div><img class="thumb" src="../../static/thumbs/pixel_hearts.png"></div>
-      <div><img class="thumb" src="../../static/thumbs/snail.png"></div>
-      <div><img class="thumb" src="../../static/thumbs/hope.png"></div>
-      <div><img class="thumb" src="../../static/thumbs/vendetta.png"></div>
-      <div><img class="thumb" src="../../static/thumbs/fire.png"></div>
-      <div><img class="thumb" src="../../static/thumbs/elephant_trunk.png"></div>
+      <div><img class="thumb" src="{% static 'thumbs/viking.png' %}"></div>
+      <div><img class="thumb" src="{% static 'thumbs/makeup.png' %}"></div>
+      <div><img class="thumb" src="{% static 'thumbs/makeup-split.png' %}"></div>
+      <div><img class="thumb" src="{% static 'thumbs/stallone.png' %}"></div>
+      <div><img class="thumb" src="{% static 'thumbs/flower_face.png' %}"></div>
+      <div><img class="thumb" src="{% static 'thumbs/galaxy.png' %}"></div>
+      <div><img class="thumb" src="{% static 'thumbs/humanoid.png' %}"></div>
+      <div><img class="thumb" src="{% static 'thumbs/devil_horns.png' %}"></div>
+      <div><img class="thumb" src="{% static 'thumbs/ping_pong.png' %}"></div>
+      <div><img class="thumb" src="{% static 'thumbs/pixel_hearts.png' %}"></div>
+      <div><img class="thumb" src="{% static 'thumbs/snail.png' %}"></div>
+      <div><img class="thumb" src="{% static 'thumbs/hope.png' %}"></div>
+      <div><img class="thumb" src="{% static 'thumbs/vendetta.png' %}"></div>
+      <div><img class="thumb" src="{% static 'thumbs/fire.png' %}"></div>
+      <div><img class="thumb" src="{% static 'thumbs/elephant_trunk.png' %}"></div>
     
     </div>
 
@@ -41,7 +42,7 @@
     <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
     <script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
-    <script type="text/javascript" src="../../static/lib/js/deepar.js"></script>
+    <script type="text/javascript" src="{% static 'lib/js/deepar.js' %}"></script>
     <script type="text/javascript">
 
 function base64ToArrayBuffer(_base64Str) {
@@ -71,15 +72,15 @@ function base64ToArrayBuffer(_base64Str) {
         licenseKey: '76861f09d5426ba79d58346c60d41cd4084a3e48d03020f4a281f4fa8d9b062be28b5bd6102e9551',
         canvas: canvas,
         segmentationConfig: {
-          modelPath: "../../static/lib/models/segmentation/segmentation-160x160-opt.bin"
+          modelPath: "{% static 'lib/models/segmentation/segmentation-160x160-opt.bin' %}"
         },
         footTrackingConfig: {
-          poseEstimationWasmPath: '../../static/lib/wasm/libxzimgPoseEstimation.wasm',
-          detectorPath: '../../static/lib/models/foot/foot-detector-android.bin', // or ...-ios.bin
-          trackerPath: '../../static/lib/models/foot/foot-tracker-android.bin',  // or ...-ios.bin
-          objPath: '../../static/lib/models/foot/foot-model.obj',
+          poseEstimationWasmPath: "{% static 'lib/wasm/libxzimgPoseEstimation.wasm' %}" ,
+          detectorPath: "{% static 'lib/models/foot/foot-detector-android.bin' %}" , // or ...-ios.bin
+          trackerPath: "{% static 'lib/models/foot/foot-tracker-android.bin' %}",  // or ...-ios.bin
+          objPath: "{% static 'lib/models/foot/foot-model.obj' %}",
         },
-        deeparWasmPath: '../../static/lib/wasm/deepar.wasm',
+        deeparWasmPath: "{% static 'lib/wasm/deepar.wasm' %}",
         callbacks: {
           onInitialize: function() {
           // start video immediately after the initalization, mirror = true
@@ -87,7 +88,7 @@ function base64ToArrayBuffer(_base64Str) {
 
           // or we can setup the video element externally and call deepAR.setVideoElement (see startExternalVideo function below)
 
-          deepAR.switchEffect(0, 'slot',  '../../static/effects/viking_helmet.deepar', function() {
+          deepAR.switchEffect(0, 'slot',  "{% static 'effects/viking_helmet.deepar' %}" , function() {
             // effect loaded
           });
         }
@@ -152,7 +153,7 @@ function base64ToArrayBuffer(_base64Str) {
         loaderWrapper.style.display = 'none';
       };
 
-      deepAR.downloadFaceTrackingModel('../../static/lib/models/face/models-68-extreme.bin');
+      deepAR.downloadFaceTrackingModel("{% static 'lib/models/face/models-68-extreme.bin' %}");
 
       let isRecording = false;
       document.getElementById('recording-btn').onclick = function(e) {
@@ -254,21 +255,21 @@ function base64ToArrayBuffer(_base64Str) {
         });
 
         var effects = [
-            '../../static/effects/viking_helmet.deepar',
-            '../../static/effects/MakeupLook.deepar',
-            '../../static/effects/Split_View_Look.deepar',
-            '../../static/effects/Stallone.deepar',
-            '../../static/effects/flower_face.deepar',
-            '../../static/effects/galaxy_background_web.deepar',
-            '../../static/effects/Humanoid.deepar',
-            '../../static/effects/Neon_Devil_Horns.deepar',
-            '../../static/effects/Ping_Pong.deepar',
-            '../../static/effects/Pixel_Hearts.deepar',
-            '../../static/effects/Snail.deepar',
-            '../../static/effects/Hope.deepar',
-            '../../static/effects/Vendetta_Mask.deepar',
-            '../../static/effects/Fire_Effect.deepar',
-            '../../static/effects/Elephant_Trunk.deepar'
+            "{% static 'effects/viking_helmet.deepar' %}",
+            "{% static 'effects/MakeupLook.deepar'%}",
+            "{% static 'effects/Split_View_Look.deepar' %}",
+            "{% static 'effects/Stallone.deepar' %}",
+            "{% static 'effects/flower_face.deepar' %}",
+            "{% static 'effects/galaxy_background_web.deepar' %}",
+            "{% static 'effects/Humanoid.deepar' %}",
+            "{% static 'effects/Neon_Devil_Horns.deepar' %}",
+            "{% static 'effects/Ping_Pong.deepar' %}",
+            "{% static 'effects/Pixel_Hearts.deepar' %}",
+            "{% static 'effects/Snail.deepar' %}",
+            "{% static 'effects/Hope.deepar' %}",
+            "{% static 'effects/Vendetta_Mask.deepar' %}",
+            "{% static 'effects/Fire_Effect.deepar' %}",
+            "{% static 'effects/Elephant_Trunk.deepar' %}"
         ];
 
         $('.effect-carousel').on('afterChange', function(event, slick, currentSlide){

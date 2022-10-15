@@ -1,0 +1,280 @@
+{% extends 'deepar_base.html' %}
+{% block head %}
+{{ block.super}}
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>    
+    <title>DeepAR</title>
+    
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+    <link rel="stylesheet" type="text/css" href="../../static/styles/index.css"/>
+{% endblock %}
+{% block content %}
+    <button id="recording-btn">Start/stop video recording</button>
+    <button id="photo-btn">Take photo</button>
+
+    <canvas class="deepar" id="deepar-canvas" oncontextmenu="event.preventDefault()"></canvas>
+    <div id="loader-wrapper">
+    <span class="loader"></span></span>
+    </div>
+
+    <div class="effect-carousel">
+      <div><img class="thumb" src="../../static/thumbs/viking.png"></div>
+      <div><img class="thumb" src="../../static/thumbs/makeup.png"></div>
+      <div><img class="thumb" src="../../static/thumbs/makeup-split.png"></div>
+      <div><img class="thumb" src="../../static/thumbs/stallone.png"></div>
+      <div><img class="thumb" src="../../static/thumbs/flower_face.png"></div>
+      <div><img class="thumb" src="../../static/thumbs/galaxy.png"></div>
+      <div><img class="thumb" src="../../static/thumbs/humanoid.png"></div>
+      <div><img class="thumb" src="../../static/thumbs/devil_horns.png"></div>
+      <div><img class="thumb" src="../../static/thumbs/ping_pong.png"></div>
+      <div><img class="thumb" src="../../static/thumbs/pixel_hearts.png"></div>
+      <div><img class="thumb" src="../../static/thumbs/snail.png"></div>
+      <div><img class="thumb" src="../../static/thumbs/hope.png"></div>
+      <div><img class="thumb" src="../../static/thumbs/vendetta.png"></div>
+      <div><img class="thumb" src="../../static/thumbs/fire.png"></div>
+      <div><img class="thumb" src="../../static/thumbs/elephant_trunk.png"></div>
+    
+    </div>
+
+
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+    <script type="text/javascript" src="../../static/lib/js/deepar.js"></script>
+    <script type="text/javascript">
+
+function base64ToArrayBuffer(_base64Str) {
+      var binaryString = window.atob(_base64Str);
+      var binaryLen = binaryString.length;
+      var bytes = new Uint8Array(binaryLen);
+      for (var i = 0; i < binaryLen; i++) {
+            var ascii = binaryString.charCodeAt(i);
+            bytes[i] = ascii;
+     }
+     return bytes;
+}
+
+      var canvasHeight = window.innerHeight;
+      var canvasWidth = window.innerWidth;
+      
+      // desktop, the width of the canvas is 0.66 * window height and on mobile it's fullscreen
+      if (window.innerWidth > window.innerHeight) {
+        canvasWidth = Math.floor(window.innerHeight*0.66);
+      }
+
+      let canvas = document.getElementById('deepar-canvas');
+      canvas.width = canvasWidth;
+      canvas.height = canvasHeight;
+
+      var deepAR = new DeepAR({ 
+        licenseKey: '76861f09d5426ba79d58346c60d41cd4084a3e48d03020f4a281f4fa8d9b062be28b5bd6102e9551',
+        canvas: canvas,
+        segmentationConfig: {
+          modelPath: "../../static/lib/models/segmentation/segmentation-160x160-opt.bin"
+        },
+        footTrackingConfig: {
+          poseEstimationWasmPath: '../../static/lib/wasm/libxzimgPoseEstimation.wasm',
+          detectorPath: '../../static/lib/models/foot/foot-detector-android.bin', // or ...-ios.bin
+          trackerPath: '../../static/lib/models/foot/foot-tracker-android.bin',  // or ...-ios.bin
+          objPath: '../../static/lib/models/foot/foot-model.obj',
+        },
+        deeparWasmPath: '../../static/lib/wasm/deepar.wasm',
+        callbacks: {
+          onInitialize: function() {
+          // start video immediately after the initalization, mirror = true
+          deepAR.startVideo(true);
+
+          // or we can setup the video element externally and call deepAR.setVideoElement (see startExternalVideo function below)
+
+          deepAR.switchEffect(0, 'slot',  '../../static/effects/viking_helmet.deepar', function() {
+            // effect loaded
+          });
+        }
+        }
+      });
+
+      deepAR.callbacks.onCameraPermissionAsked = function() {
+        console.log('camera permission asked');
+      };
+
+      deepAR.callbacks.onCameraPermissionGranted = function() {
+        console.log('camera permission granted');
+      };
+
+      deepAR.callbacks.onCameraPermissionDenied = function() {
+        console.log('camera permission denied');
+      };
+
+      deepAR.callbacks.onScreenshotTakenCanvas = function(canvas) {
+
+        // canvas.toBlob(function(blob) {
+        //   var data = new FormData();
+        //   data.append('file', blob, 'file');
+        //   fetch('/deepar', {
+        //     method: 'POST',
+        //     body: data
+        //   })
+        //     .then(response => response.json())
+        //     .then(json => console.log(json))
+        // }, 'image/png');
+      }
+      
+      deepAR.callbacks.onScreenshotTaken = function(photo) {
+        console.log(photo);
+
+        fetch('/deepar', {
+          method: 'POST',
+          body: photo,
+          headers: {
+            'Content-Type': 'application/upload'
+          }
+        })
+          .then(response => response.json())
+          .then(json => console.log(json))
+        // var a = document.createElement('a');
+        //     a.href = photo;
+        //     a.download = 'photo.png';
+        //     document.body.appendChild(a);
+        //     a.click();
+      };
+
+      deepAR.callbacks.onImageVisibilityChanged = function(visible) {
+        console.log('image visible', visible);
+      };
+
+      deepAR.callbacks.onFaceVisibilityChanged = function(visible) {
+        console.log('face visible', visible);
+      };
+
+      deepAR.callbacks.onVideoStarted = function() {
+        var loaderWrapper = document.getElementById('loader-wrapper');
+        loaderWrapper.style.display = 'none';
+      };
+
+      deepAR.downloadFaceTrackingModel('../../static/lib/models/face/models-68-extreme.bin');
+
+      let isRecording = false;
+      document.getElementById('recording-btn').onclick = function(e) {
+        if(!isRecording) {
+          isRecording = true;
+          deepAR.startVideoRecording();
+          console.log("Recording started!");
+        } else {
+          deepAR.finishVideoRecording(function(video) {
+            window.open(URL.createObjectURL(video), '_blank').focus();
+            console.log("Recording finished!");
+            isRecording = false;
+          });
+        }
+      };
+
+      document.getElementById('photo-btn').onclick = function(e) {
+        deepAR.takeScreenshot(); 
+      }
+
+      // Store video objects for cleanup
+      var videoObjects = {};
+
+      function startExternalVideo() {
+        cleanupVideoObjects();
+        // create video element
+        var video = document.createElement('video');
+        video.muted = true;
+        video.loop = true;
+        video.controls = true;
+        video.setAttribute('playsinline', 'playsinline');
+        video.style.width = '100%';
+        video.style.height = '100%';
+
+        // put it somewhere in the DOM
+        var videoContainer = document.createElement('div');
+        videoContainer.appendChild(video);
+        videoContainer.style.width = '1px';
+        videoContainer.style.height = '1px';
+        videoContainer.style.position = 'absolute';
+        videoContainer.style.top = '0px';
+        videoContainer.style.left = '0px';
+        videoContainer.style['z-index'] = '-1';
+        document.body.appendChild(videoContainer);
+  
+        videoObjects.videoContainer = videoContainer;
+        videoObjects.video = video;
+          
+        navigator.mediaDevices.getUserMedia({video: true}).then(function(stream) {
+          try {
+            video.srcObject = stream;
+          } catch (error) {
+            video.src = URL.createObjectURL(stream);
+          }
+          setTimeout(function() {
+            video.play();
+          }, 50);
+        }).catch(function(error) {
+            console.log('error in video play:', error);
+        });
+
+        // tell the DeepAR SDK about our new video element
+        deepAR.setVideoElement(video, true);
+          
+        var loaderWrapper = document.getElementById('loader-wrapper');
+        loaderWrapper.style.display = 'none';
+      }
+
+      function cleanupVideoObjects() {
+        if (videoObjects.length > 0){  
+            videoObjects.videoContainer.parentNode.removeChild(videoObjects.videoContainer);
+            videoObjects.videoContainer = null;
+            if (videoObjects.video.srcObject) {
+              //getUserMedia starts a stream, all tracks on all streams need to be stoppedbefore calling getUserMedia again
+              videoObjects.video.srcObject.getTracks().forEach(track => track.stop())
+            }
+            videoObjects.video.pause();
+            videoObjects = {};
+        }
+      }
+
+      // Position the carousel to cover the canvas
+      if (window.innerWidth > window.innerHeight) {
+        var width = Math.floor(window.innerHeight*0.66);
+        var carousel = document.getElementsByClassName('effect-carousel')[0];
+        carousel.style.width = width + 'px';
+        carousel.style.marginLeft = (window.innerWidth-width)/2 + "px";
+      }
+
+
+      $(document).ready(function() {
+        $('.effect-carousel').slick({
+          slidesToShow: 1,
+          centerMode: true,
+          focusOnSelect: true,
+          arrows: false,
+          accessibility: false,
+          variableWidth: true
+        });
+
+        var effects = [
+            '../../static/effects/viking_helmet.deepar',
+            '../../static/effects/MakeupLook.deepar',
+            '../../static/effects/Split_View_Look.deepar',
+            '../../static/effects/Stallone.deepar',
+            '../../static/effects/flower_face.deepar',
+            '../../static/effects/galaxy_background_web.deepar',
+            '../../static/effects/Humanoid.deepar',
+            '../../static/effects/Neon_Devil_Horns.deepar',
+            '../../static/effects/Ping_Pong.deepar',
+            '../../static/effects/Pixel_Hearts.deepar',
+            '../../static/effects/Snail.deepar',
+            '../../static/effects/Hope.deepar',
+            '../../static/effects/Vendetta_Mask.deepar',
+            '../../static/effects/Fire_Effect.deepar',
+            '../../static/effects/Elephant_Trunk.deepar'
+        ];
+
+        $('.effect-carousel').on('afterChange', function(event, slick, currentSlide){
+          deepAR.switchEffect(0, 'slot', effects[currentSlide]);
+        });
+
+      });      
+    </script>
+{% endblock %}

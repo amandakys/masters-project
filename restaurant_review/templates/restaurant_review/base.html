@@ -14,8 +14,14 @@
         <div class="container">
           <a class="navbar-brand" href="/">
             <img src="{% static 'images/azure-icon.svg' %}" alt="" width="30" height="24" class="d-inline-block align-text-top">
-            Azure Restaurant Review
-          </a>
+            {% if user.is_authenticated %}
+              Hi {{ user.username }}!
+              <p><a href="{% url 'logout' %}">Log Out</a></p>
+            {% else %}
+              <p>You are not logged in</p>
+              <a href="{% url 'login' %}">Log In</a>
+            {% endif %}</a>
+            
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>

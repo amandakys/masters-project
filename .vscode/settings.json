@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/070eff9d-4ee0-4145-b0d2-77a727245775/AppServices/subscriptions/070eff9d-4ee0-4145-b0d2-77a727245775/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/amanda-masters-project",
+    "appService.deploySubpath": "."
+}

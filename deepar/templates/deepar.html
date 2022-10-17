@@ -11,6 +11,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'styles/index.css' %}"/>
 {% endblock %}
 {% block content %}
+{% csrf_token %}
     <button id="recording-btn">Start/stop video recording</button>
     <button id="photo-btn">Take photo</button>
 
@@ -44,7 +45,7 @@
     <script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
     <script type="text/javascript" src="{% static 'lib/js/deepar.js' %}"></script>
     <script type="text/javascript">
-
+const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 function base64ToArrayBuffer(_base64Str) {
       var binaryString = window.atob(_base64Str);
       var binaryLen = binaryString.length;
@@ -124,10 +125,11 @@ function base64ToArrayBuffer(_base64Str) {
       deepAR.callbacks.onScreenshotTaken = function(photo) {
         console.log(photo);
 
-        fetch('/deepar', {
+        fetch('/deepar/', {
           method: 'POST',
           body: photo,
           headers: {
+            'X-CSRFToken': csrftoken,
             'Content-Type': 'application/upload'
           }
         })

@@ -1,13 +1,32 @@
 <!-- templates/registration/login.html -->
 {% extends 'base.html' %}
-
 {% block title %}Login{% endblock %}
+<!-- {% block head %}
+    {{ block.super }}
+    <style>
+      .box {
+          background-color: #DCEDC8;
+          padding: 2rem;
+          width: fit-content
+      }
+  </style>
+{% endblock %} -->
+
 
 {% block content %}
-<h2>Log In</h2>
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Log In</button>
-</form>
+
+<!-- <div class="box"> -->
+  <h2>Log In</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn btn-primary" type="submit">Log In</button>
+  </form>
+  <div style="margin-top: 1rem">
+  
+  <h6>Don't have an account?</h6> 
+  <a href="{% url 'signup' %}">Sign up</a>
+  </div>
+<!-- </div> -->
+
 {% endblock %}

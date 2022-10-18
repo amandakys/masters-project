@@ -1,19 +1,22 @@
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import redirect, render, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Avg, Count
 from django.urls import reverse
 from django.utils import timezone
 
-from restaurant_review.models import Restaurant, Review
+from restaurant_review.models import Profile, Restaurant, Review
 
 # Create your views here.
 
 def index(request):
     print('Request for index page received')
-
-    restaurants = Restaurant.objects.annotate(avg_rating=Avg('review__rating')).annotate(review_count=Count('review'))
-    return render(request, 'restaurant_review/index.html', {'restaurants': restaurants })
+    if request.user.is_authenticated: 
+        profile = get_object_or_404(Profile)
+        # restaurants = Restaurant.objects.annotate(avg_rating=Avg('review__rating')).annotate(review_count=Count('review'))
+        return render(request, 'restaurant_review/index.html', {'profile': profile})
+    else: 
+        return redirect('/account/login/')
 
 
 def details(request, id):

@@ -39,35 +39,77 @@
         -webkit-text-stroke: initial;
         /* overflow: hidden; */
       }
+      .row {
+        display: grid;
+        grid-auto-flow: column;
+        align-content: center;
+        align-items: center;
+      }
+      .status {
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: max-content;
+        align-content: center;
+        column-gap: 10px;
+      }
+      .wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-column-gap: 1px;
+      grid-row-gap: 1px;
+      }
+      
+    .letter {
+      display: flex;
+      justify-content: left;
+      align-items: center;
+    }
+    h6 {
+      margin-bottom: 0;
+    }
   </style>
 {% endblock %}
 {% block content %}
-  <h1>Restaurants</h1>
+  <h1>Tasks</h1>
 
-  {% if restaurants %}
-      <table class="table">
-          <thead>
-              <tr>
-                  <th>Name</th>
-                  <th>Rating</th>
-                  <th class="text-end">Details</th>
-              </tr>
-          </thead>
-          <tbody>
-              {% for restaurant in restaurants %}
-                  <tr>
-                      <td>{{ restaurant.name }}</td>
-                      <td>{% star_rating restaurant.avg_rating restaurant.review_count   %}   </td>
-                      <td class="text-end"><a href="{% url 'details' restaurant.id %}" class="btn btn-sm btn-primary">Details</a></td>
-                  </tr>
-              {% endfor %}
-          </tbody>
-      </table>
-  {% else %}
-      <p>No restaurants exist.  Select Add new restaurant to add one.</p>
-  {% endif %}
-
-  <div class="d-flex justify-content-end">
-          <a href="{% url 'create_restaurant' %}" class="btn btn-success px-4 gap-3">Add new restaurant</a>
+  <div class="wrapper">
+    <div class="letter">
+      <a href="{% url 'index' %}"><h3>Experiment 1</h3></a>
+    </div>
+    <div class="letter">
+      <div class="status">
+        <input type="checkbox" {% if profile.experiment_one %} checked {% endif %} />
+        {% if profile.experiment_one %} <h6>Complete</h6> {% else %} <h6> Not Complete</h6> {% endif %}
+  
+      </div>
+    </div>
+    <div class="letter">
+      <h3>Experiment 2</h3>
+    </div>
+    <div class="letter">
+      <div class="status">
+        <input type="checkbox" {% if profile.experiment_two%} checked {% endif %}/>
+        {% if profile.experiment_two %} <h6>Complete</h6> {% else %} <h6> Not Complete</h6> {% endif %}
+  
+      </div>
+    </div>
   </div>
+  <!-- <div class="row">
+    <h3>Experiment 1</h3>
+    <div class="status">
+      <input type="checkbox" {% if profile.experiment_one %} checked {% endif %} />
+      {% if profile.experiment_one %} <h6>Complete</h6> {% else %} <h6> Not Complete</h6> {% endif %}
+
+    </div>
+
+  </div>
+  <div class="row">
+    <h3>Experiment 2</h3>
+    <div class="status">
+      <input type="checkbox" {% if profile.experiment_two%} checked {% endif %}/>
+      {% if profile.experiment_two %} <h6>Complete</h6> {% else %} <h6> Not Complete</h6> {% endif %}
+
+    </div>
+
+  </div> -->
 {% endblock %}

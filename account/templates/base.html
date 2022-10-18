@@ -1,14 +1,41 @@
 <!-- templates/base.html -->
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  {% block head %}
   <meta charset="utf-8">
+  <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
   <title>{% block title %}Django Auth Tutorial{% endblock %}</title>
+  <style>
+      .box {
+          background-color: #DCEDC8;
+          padding: 2rem;
+          height: fit-content
+      }
+      .container {
+        display: flex;
+        justify-content: center;
+        height: 100vh;
+        align-items: center;
+      }
+  </style>
+  {% endblock %}
 </head>
 <body>
-  <main>
-    {% block content %}
-    {% endblock %}
+  <main class="container">
+    <div>
+      <div>
+        <h1>Welcome! </h1>
+        <h6>Thank you for participating in my research  </h6>
+      </div>
+      <div class="box">
+        {% block content %}
+        {% endblock %}
+      </div>
+    </div>
   </main>
+  <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>      
 </body>
 </html>

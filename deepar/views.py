@@ -14,10 +14,6 @@ from django.views.generic.base import TemplateView
 
 # Create your views here.
 
-def display(request): 
-    print('Request for display page received')
-    return render(request, 'display.html')
-
 def index(request):
 
     if request.method == 'POST':

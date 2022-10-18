@@ -44,9 +44,12 @@
         {% if user.is_authenticated %}
         {% block content %}{% endblock %}
         {% else %}
-          <p>You are not logged in</p>
-          <a href="{% url 'login' %}">Log In</a>
-          <a href="{% url 'signup' %}">Sign Up </a>
+          <div style="padding-top: 4.5rem">
+
+            <p>You are not logged in</p>
+            <a href="{% url 'login' %}">Log In</a>
+            <a href="{% url 'signup' %}">Sign Up </a>
+          </div>
         {% endif %}
       </div>
       </main>

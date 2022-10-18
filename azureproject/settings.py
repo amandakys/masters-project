@@ -40,12 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'storages',
-    'crispy_forms',
     'account',
     'deepar',
 ]
-
-CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -61,7 +58,7 @@ ROOT_URLCONF = 'azureproject.urls'
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',   
         'DIRS': [BASE_DIR/ "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -141,8 +138,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATICFILES_DIRS = (str(BASE_DIR.joinpath('static')),)
-STATIC_URL = 'static/'
+# STATICFILES_DIRS = (str(BASE_DIR.joinpath('static')),)
+# STATIC_URL = 'static/'
 
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
@@ -158,15 +155,15 @@ LOGIN_REDIRECT_URL = "/"
 
 LOGOUT_REDIRECT_URL = "/"
 
-# DEFAULT_FILE_STORAGE = 'azureproject.custom_azure.AzureMediaStorage'
-# STATICFILES_STORAGE = 'azureproject.custom_azure.AzureStaticStorage'
+DEFAULT_FILE_STORAGE = 'azureproject.custom_azure.AzureMediaStorage'
+STATICFILES_STORAGE = 'azureproject.custom_azure.AzureStaticStorage'
 
-# STATIC_LOCATION = "static"
-# # MEDIA_LOCATION = "media"
+STATIC_LOCATION = "static"
+# MEDIA_LOCATION = "media"
 
-# AZURE_ACCOUNT_NAME = "mastersproject"
-# AZURE_CUSTOM_DOMAIN = f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net'
-# STATIC_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{STATIC_LOCATION}/'
+AZURE_ACCOUNT_NAME = "mastersproject"
+AZURE_CUSTOM_DOMAIN = f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net'
+STATIC_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{STATIC_LOCATION}/'
 # MEDIA_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{MEDIA_LOCATION}/'
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880

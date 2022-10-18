@@ -12,8 +12,7 @@ from restaurant_review.models import Profile, Restaurant, Review
 def index(request):
     print('Request for index page received')
     if request.user.is_authenticated: 
-        profile = get_object_or_404(Profile)
-        # restaurants = Restaurant.objects.annotate(avg_rating=Avg('review__rating')).annotate(review_count=Count('review'))
+        profile = Profile.objects.get(user=request.user)
         return render(request, 'restaurant_review/index.html', {'profile': profile})
     else: 
         return redirect('/account/login/')

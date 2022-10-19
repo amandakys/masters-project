@@ -89,4 +89,6 @@ def index(request):
 
     return render(request, 'deepar.html')
 
-    
+def filters(request):
+        return render(request, 'deepar_filters.html')
+

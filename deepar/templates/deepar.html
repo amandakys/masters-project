@@ -151,13 +151,18 @@
 {% endblock %}
 {% block content %}
 {% csrf_token %}
-    <img src="" id="image"/> 
+<div style="display: flex">
 
-    <canvas class="deepar" id="deepar-canvas" oncontextmenu="event.preventDefault()"></canvas>
-    <button id="photo-btn" >Take photo</button>
+  <canvas class="deepar" id="deepar-canvas" oncontextmenu="event.preventDefault()"></canvas>
+  <canvas style="display: none" class="deepar" id="deepar-canvas-unedited" oncontextmenu="event.preventDefault()"></canvas>
+</div>
+
+    <button id="photo-btn" onclick="takePhoto()">Take photo</button>
     <div id="buttons">
       <button id="retake-btn" onclick="retakePhoto()">Retake photo</button>
-      <button id="submit-btn" onclick="submitPhoto()">Submit photo</button>
+      <a href="{% url 'select' %}" >
+        <button id="submit-btn" onclick="submitPhoto()">Submit photo</button>
+      </a>
     </div>
 
     <div id="loader-wrapper">
@@ -169,6 +174,7 @@
     <script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
     <script type="text/javascript" src="{% static 'lib/js/deepar.js' %}"></script>
     <script type="text/javascript">
+
       const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
       function base64ToArrayBuffer(_base64Str) {
             var binaryString = window.atob(_base64Str);
@@ -181,32 +187,32 @@
           return bytes;
       }
 
+      function submitPhoto() {
+          deepAR.takeScreenshot(); 
+          noAR.takeScreenshot(); 
+      }
+ 
       function retakePhoto() {
           let canvas = document.getElementById('deepar-canvas');
-          canvas.style.display = 'block';
-
-          let image = document.getElementById('image');
-          image.src = ""; 
 
           let take_photo = document.getElementById('photo-btn')
           take_photo.style.display = 'block';
 
           let buttons = document.getElementById('buttons')
           buttons.style.display = "none";
+
+          deepAR.resume(); 
+          noAR.resume(); 
       }
 
-      function submitPhoto() {
-        let image = document.getElementById('image');
-        let photo = image.getAttribute("src")
-        console.log(photo)
-        fetch('/deepar/', {
-                method: 'POST',
-                body: photo,
-                headers: {
-                  'X-CSRFToken': csrftoken,
-                  'Content-Type': 'application/upload'
-                }
-              })
+      function takePhoto() {
+          let take_photo = document.getElementById('photo-btn')
+          take_photo.style.display = 'none';
+
+          let buttons = document.getElementById('buttons')
+          buttons.style.display = "grid";
+          deepAR.pause(); 
+          noAR.pause();
       }
 
       var canvasHeight = window.innerHeight;
@@ -220,6 +226,8 @@
       let canvas = document.getElementById('deepar-canvas');
       canvas.width = canvasWidth;
       canvas.height = canvasHeight;
+
+
       var deepAR = new DeepAR({ 
         licenseKey: '76861f09d5426ba79d58346c60d41cd4084a3e48d03020f4a281f4fa8d9b062be28b5bd6102e9551',
         canvas: canvas,
@@ -240,7 +248,7 @@
 
           // or we can setup the video element externally and call deepAR.setVideoElement (see startExternalVideo function below)
 
-          deepAR.switchEffect(0, 'slot',  "{% static 'effects/MakeupLook.deepar' %}" , function() {
+          deepAR.switchEffect(0, 'slot',  "{% static 'effects/Smooth_1_Soft_1_R202_G199_B170.deepar' %}" , function() {
             // effect loaded
           });
         }
@@ -258,20 +266,22 @@
       deepAR.callbacks.onCameraPermissionDenied = function() {
         console.log('camera permission denied');
       };
-      
+
       deepAR.callbacks.onScreenshotTaken = function(photo) {
-        // console.log(photo);
-        let image = document.getElementById('image');
-        image.src = photo; 
-        image.width = canvasWidth;
-        image.height = canvasHeight; 
-        canvas.style.display = 'none';
 
-        let take_photo = document.getElementById('photo-btn')
-        take_photo.style.display = 'none';
+        let myHeaders = new Headers({
+          'X-CSRFToken': csrftoken,
+          'Content-Type': 'application/upload',
+          'X-Is-AR': 'True' 
+        })
 
-        let buttons = document.getElementById('buttons')
-        buttons.style.display = "grid";
+        fetch('/experimentone/', {
+                method: 'POST',
+                mode: 'cors',
+                body: photo,
+                headers: myHeaders,
+        })
+
       };
 
       deepAR.callbacks.onImageVisibilityChanged = function(visible) {
@@ -282,24 +292,72 @@
         console.log('face visible', visible);
       };
 
-      deepAR.callbacks.onVideoStarted = function() {
-        var loaderWrapper = document.getElementById('loader-wrapper');
-        loaderWrapper.style.display = 'none';
-      };
-
       deepAR.downloadFaceTrackingModel("{% static 'lib/models/face/models-68-extreme.bin' %}");
 
-      document.getElementById('photo-btn').onclick = function(e) {
-        deepAR.takeScreenshot(); 
-      }
+      // second canvas code
+      let canvasUnedited = document.getElementById('deepar-canvas-unedited');
+      canvasUnedited.width = canvasWidth;
+      canvasUnedited.height = canvasHeight;
+      
+      var noAR = new DeepAR({ 
+        licenseKey: '76861f09d5426ba79d58346c60d41cd4084a3e48d03020f4a281f4fa8d9b062be28b5bd6102e9551',
+        canvas: canvasUnedited,
+        segmentationConfig: {
+          modelPath: "{% static 'lib/models/segmentation/segmentation-160x160-opt.bin' %}"
+        },
+        footTrackingConfig: {
+          poseEstimationWasmPath: "{% static 'lib/wasm/libxzimgPoseEstimation.wasm' %}" ,
+          detectorPath: "{% static 'lib/models/foot/foot-detector-android.bin' %}" , // or ...-ios.bin
+          trackerPath: "{% static 'lib/models/foot/foot-tracker-android.bin' %}",  // or ...-ios.bin
+          objPath: "{% static 'lib/models/foot/foot-model.obj' %}",
+        },
+        deeparWasmPath: "{% static 'lib/wasm/deepar.wasm' %}",
+        callbacks: {
+          onInitialize: function() {
+          // start video immediately after the initalization, mirror = true
+          noAR.startVideo(true);
 
-      // Position the carousel to cover the canvas
-      if (window.innerWidth > window.innerHeight) {
-        var width = Math.floor(window.innerHeight*0.66);
-        var carousel = document.getElementsByClassName('effect-carousel')[0];
-        carousel.style.width = width + 'px';
-        carousel.style.marginLeft = (window.innerWidth-width)/2 + "px";
-      }
+          }
+        }
+      });
+
+      noAR.callbacks.onCameraPermissionAsked = function() {
+        console.log('camera permission asked');
+      };
+
+      noAR.callbacks.onCameraPermissionGranted = function() {
+        console.log('camera permission granted');
+      };
+
+      noAR.callbacks.onCameraPermissionDenied = function() {
+        console.log('camera permission denied');
+      };
+
+      noAR.callbacks.onScreenshotTaken = function(photo) {
+        let myHeaders = new Headers({
+          'X-CSRFToken': csrftoken,
+          'Content-Type': 'application/upload',
+          'X-Is-AR': '' 
+        })
+        
+        fetch('/experimentone/', {
+                method: 'POST',
+                mode: 'cors',
+                body: photo,
+                headers: myHeaders,
+        })
+
+      };
+
+      noAR.callbacks.onImageVisibilityChanged = function(visible) {
+        console.log('image visible', visible);
+      };
+
+      noAR.callbacks.onFaceVisibilityChanged = function(visible) {
+        console.log('face visible', visible);
+      };
+
+      noAR.downloadFaceTrackingModel("{% static 'lib/models/face/models-68-extreme.bin' %}");
 
     </script>
 {% endblock %}

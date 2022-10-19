@@ -21,7 +21,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('', include('restaurant_review.urls')),
-    path('deepar/', include("deepar.urls") ),
+    path('experimentone/', include("deepar.urls") ),
     path('admin/', admin.site.urls),
     path("account/", include("account.urls")),
     path('account/', include("django.contrib.auth.urls")),

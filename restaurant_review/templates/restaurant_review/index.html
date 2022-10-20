@@ -70,28 +70,31 @@
   </style>
 {% endblock %}
 {% block content %}
-  <h1>Tasks</h1>
-
-  <div class="wrapper">
-    <div class="letter">
-      <a href="{% url 'index' %}"><h3>Experiment 1</h3></a>
-    </div>
-    <div class="letter">
-      <div class="status">
-        <input type="checkbox" onclick="return false" {% if profile.experiment_one %} checked {% endif %} />
-        {% if profile.experiment_one %} <h6>Complete</h6> {% else %} <h6> Not Complete</h6> {% endif %}
+  <div class="container">
+    <h1>Tasks</h1>
   
+    <div class="wrapper">
+      <div class="letter">
+        <a href="{% url 'index' %}"><h3>Experiment 1</h3></a>
+      </div>
+      <div class="letter">
+        <div class="status">
+          <input type="checkbox" onclick="return false" {% if profile.experiment_one %} checked {% endif %} />
+          {% if profile.experiment_one %} <h6>Complete</h6> {% else %} <h6> Not Complete</h6> {% endif %}
+    
+        </div>
+      </div>
+      <div class="letter">
+        <h3>Experiment 2</h3>
+      </div>
+      <div class="letter">
+        <div class="status">
+          <input type="checkbox" onclick="return false" {% if profile.experiment_two%} checked {% endif %}/>
+          {% if profile.experiment_two %} <h6>Complete</h6> {% else %} <h6> Not Complete</h6> {% endif %}
+    
+        </div>
       </div>
     </div>
-    <div class="letter">
-      <h3>Experiment 2</h3>
-    </div>
-    <div class="letter">
-      <div class="status">
-        <input type="checkbox" onclick="return false" {% if profile.experiment_two%} checked {% endif %}/>
-        {% if profile.experiment_two %} <h6>Complete</h6> {% else %} <h6> Not Complete</h6> {% endif %}
-  
-      </div>
-    </div>
+    
   </div>
 {% endblock %}

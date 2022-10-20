@@ -41,8 +41,11 @@
         </div>
       </nav>
 
-      <main class="container">    
-        {% block content %}{% endblock %}
+      <main>    
+        <!-- <div style="padding-top: 4.5rem"> -->
+          {% block content %}{% endblock %}
+        <!-- </div> -->
+        
       </main>
       <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>      
 </body>

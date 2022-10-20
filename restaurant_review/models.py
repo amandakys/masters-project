@@ -26,9 +26,12 @@ class Review(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    experiment_one = models.BooleanField(default=True)
-    experiment_two = models.BooleanField(default=False)
-
+    experiment_one = models.BooleanField(default=False) #is experiment one complete
+    experiment_one_result = models.BooleanField(default=True) #true = yes false = no 
+    experiment_two = models.BooleanField(default=False) #is experiment two complete
+    # experiment_two_result = models.BooleanField()
+    isARCamera = models.BooleanField(default=True) #show participant AR camera
+    showARImage = models.BooleanField(default=True) #show participant AR image 
 
     @receiver(post_save, sender=User)
     def create_user_profile(sender, instance, created, **kwargs):

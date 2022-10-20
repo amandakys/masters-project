@@ -1,8 +1,111 @@
-{% extends 'deepar_base.html' %}
+<!-- restaurant_review/base.html -->
+{% extends "restaurant_review/base.html" %}
+{% block head %}
+    {{ block.super }}
+    <style>
+      #image {
+          max-width: 100%
+            /* max-height: 80%; */
+      }
+      #no-btn {
+        /* background-color: #dc3545; */
+        width: 100%;
+        border-radius: 0;
+        height: 80px;
 
-{% block content %}
-    <p>test</p>
-    <!-- {% if dataurl %} 
-    <img src="{{ dataurl }}"/>
-    {% endif %} -->
+      }
+
+      #yes-btn {
+        /* background-color: #20c997; */
+        width: 100%;
+        border-radius: 0;
+        height: 80px;
+
+
+      }
+      .button-box {
+        position: fixed; 
+        bottom: 0; 
+        z-index: 2;
+        display: flex;
+        width: 100%;
+        border: none;
+      }
+      .image-wrapper {
+        margin: 5px; 
+      }
+      .question {
+        background-color: white;
+        position: fixed; 
+        top: 4.5rem; 
+        width: -webkit-fill-available;
+        display: flex; 
+        align-content: center;
+        justify-content: center;
+        padding-top: 1rem;
+        padding-bottom: 0.5rem;
+        border-radius: 5px;
+        margin: 0px 2em; 
+      }
+
+    </style>
 {% endblock %}
+{% block content %}
+{% csrf_token %}
+
+    <div class="question">
+        <h5>Does this image look retouched? </h5>
+    </div>
+    <div class="image-wrapper">
+        {% if profile.showARImage %}
+        <img id="image" onerror="waitAndReload(event)" data-max-retry="5" data-retry="0"  src="https://mastersproject.blob.core.windows.net/media/{{user.username}}/experimentone/edited.png"/>
+        {% else %}
+        <img id="image" onerror="waitAndReload(event)" data-max-retry="5" data-retry="0"  src="https://mastersproject.blob.core.windows.net/media/{{user.username}}/experimentone/unedited.png"/>
+        {% endif %}
+    </div>
+  
+    <!-- <img onerror="waitAndReload(event)" data-max-retry="5" data-retry="0"  src="https://mastersproject.blob.core.windows.net/media/{{user.username}}/experimentone/edited.png"/>
+    <img onerror="waitAndReload(event)" data-max-retry="5" data-retry="0" src="https://mastersproject.blob.core.windows.net/media/{{user.username}}/experimentone/unedited.png"/> -->
+    <div class="button-box">
+            <button id="no-btn" onclick="sendResult(false)" class="btn btn-danger">No</button>
+            <button id="yes-btn" onclick="sendResult(true)" class="btn btn-success">Yes</button>
+    </div>
+
+    <script type="text/javascript">
+        console.log("showARImage: " + "{{ profile.showARImage }}")
+
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        function sendResult(result) {
+            fetch('/experimentone/select/', {
+                method: 'POST',
+                mode: 'cors',
+                // body: result, 
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                    'X-Result': result ? 'True': ''
+
+                }
+            })
+            location.href = "{% url 'complete'%}"
+        }
+        function waitAndReload(event) {
+    
+            const originalSrc = event.target.src;
+    
+            if (parseInt(event.target.getAttribute('data-retry'), 10) !== parseInt(event.target.getAttribute('data-max-retry'), 10)) {
+    
+                event.target.setAttribute('data-retry', parseInt(event.target.getAttribute('data-retry'), 10) + 1);
+    
+                // event.target.src = '/assets/images/placeholder.png';
+    
+                setTimeout(function () {
+                    event.target.src = originalSrc;
+                }, 500);
+            } else {
+                event.target.src = 'https://placeimg.com/200/300/animals';
+            }
+        }
+
+    </script>
+{% endblock %}  

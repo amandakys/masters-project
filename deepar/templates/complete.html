@@ -1,0 +1,26 @@
+<!-- restaurant_review/base.html -->
+{% extends "restaurant_review/base.html" %}
+{% block head %}
+{{ block.super }}
+<style>
+    .box {
+
+        padding-top: 4.5rem;
+        /* justify-content: center; */
+        display: flex;
+        flex-direction: column;
+        /* align-content: center; */
+        align-items: center;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="box">
+        <h1> Thank you for completing Experiment One </h1>
+        <h3> Please return to the home page to continue onto Experiment Two </h3>
+        <button class="btn btn-primary" type="submit" onclick="location.href = '/'">Return to Home</button>
+    </div>
+</div>
+
+{% endblock %}

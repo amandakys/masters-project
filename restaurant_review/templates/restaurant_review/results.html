@@ -1,0 +1,48 @@
+{% extends "restaurant_review/base.html" %}
+{% block content %}
+<div class="container" style="padding-top: 4.5rem">
+    {% if user.is_superuser %}
+    <h1> Results</h1>
+    <h3> Experiment 1</h3>
+    <table class="table">
+        <thead>
+            <th>Participant</th>
+            <th>Shown AR Camera</th>
+            <th>Shown AR Image </th>
+            <th>Selection</th>
+            <th>Correct? </th>
+        </thead>
+        <tbody>
+            {% for user in all_users %}
+                <tr>
+                    <td>{{user.username}}</td>
+                    <td>{% if user.isARCamera %} YES {% else %} NO {% endif %}</td>
+                    <td>{% if user.showARImage %} YES {% else %} NO {% endif %}</td>
+                    <td>{% if user.experiment_one_result %} YES {% else %} NO {% endif %}</td>
+                    <td>{% if user.experiment_one_result == user.showARImage %} YES {% else %} NO {% endif %}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3> Experiment 2</h3>
+    <table class="table">
+        <thead>
+            <th>Participant</th>
+            <th>Shown AR Camera</th>
+        </thead>
+        <tbody>
+            {% for user in all_users %}
+                <tr>
+                    <td>{{user.username}}</td>
+                    <td>{% if user.isARCamera %} YES {% else %} NO {% endif %}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <h1> Sorry you don't have permission to view this page </h1>
+    {% endif %}
+</div>
+
+{% endblock %}

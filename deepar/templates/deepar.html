@@ -156,15 +156,17 @@
   <canvas class="deepar" id="deepar-canvas" oncontextmenu="event.preventDefault()"></canvas>
   <canvas style="display: none" class="deepar" id="deepar-canvas-unedited" oncontextmenu="event.preventDefault()"></canvas>
 </div>
+{% url 'index' as experimentone %}
+{% url 'camera' as experimenttwo %}
+
 
     <button id="photo-btn" onclick="takePhoto()">Take photo</button>
     <div id="buttons">
       <button id="retake-btn" onclick="retakePhoto()">Retake photo</button>
-      <a href="{% url 'select' %}" >
+      <a href="{% if request.path == experimentone %} {% url 'select' %} {% elif profile.experiment_two_day >= 7 %} {% url 'selectthree' %} {% else %}{% url 'next' %}{% endif %}">
         <button id="submit-btn" onclick="submitPhoto()">Submit photo</button>
       </a>
     </div>
-
     <div id="loader-wrapper">
     <span class="loader"></span></span>
     </div>
@@ -275,7 +277,7 @@
           'X-Is-AR': 'True' 
         })
 
-        fetch('/experimentone/', {
+        fetch('{{ request.path }}', {
                 method: 'POST',
                 mode: 'cors',
                 body: photo,
@@ -340,7 +342,7 @@
           'X-Is-AR': '' 
         })
         
-        fetch('/experimentone/', {
+        fetch('{{ request.path }}', {
                 method: 'POST',
                 mode: 'cors',
                 body: photo,

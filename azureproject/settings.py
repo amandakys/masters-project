@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'storages',
     'account',
     'deepar',
+    'experimenttwo',
 ]
 
 MIDDLEWARE = [

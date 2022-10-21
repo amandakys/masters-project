@@ -1,4 +1,4 @@
-import datetime
+from datetime import date, datetime
 
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator 
@@ -28,7 +28,10 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     experiment_one = models.BooleanField(default=False) #is experiment one complete
     experiment_one_result = models.BooleanField(default=True) #true = yes false = no 
+
     experiment_two = models.BooleanField(default=False) #is experiment two complete
+    experiment_two_day = models.IntegerField(default=0) #day cnt of experiment completed
+    experiment_two_last_photo_date = models.DateField(default=date(1999, 1, 1)) #date of last photo taken
     # experiment_two_result = models.BooleanField()
     isARCamera = models.BooleanField(default=True) #show participant AR camera
     showARImage = models.BooleanField(default=True) #show participant AR image 
@@ -42,4 +45,10 @@ class Profile(models.Model):
     def save_user_profile(sender, instance, **kwargs):
         instance.profile.save()
 
+    @property
+    def isPhotoTaken(self):
+        return date.today() == self.experiment_two_last_photo_date
 
+    @property 
+    def isComplete(self):
+        return self.experiment_two_day >= 7

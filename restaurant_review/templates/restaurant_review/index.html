@@ -67,15 +67,29 @@
     h6 {
       margin-bottom: 0;
     }
+    p {
+      margin-bottom: 0
+    }
   </style>
 {% endblock %}
 {% block content %}
   <div class="container">
+    {% if not profile.isComplete %}
     <h1>Tasks</h1>
-  
+    {% else %}
+    <h1>Thank You!</h1>
+    <h2>You're all done</h2>
+    {% endif %}
+
     <div class="wrapper">
       <div class="letter">
-        <a href="{% url 'index' %}"><h3>Experiment 1</h3></a>
+        {% if not profile.experiment_one %} 
+        <a href="{% url 'index' %}">
+          <h3>Experiment 1</h3>
+        </a>
+        {% else %}
+          <h3>Experiment 1</h3>
+        {% endif %}
       </div>
       <div class="letter">
         <div class="status">
@@ -85,15 +99,25 @@
         </div>
       </div>
       <div class="letter">
-        <h3>Experiment 2</h3>
+        <!-- <a href="{% if profile.isPhotoTaken %} {% url 'next' %} {% else %} {% url 'camera' %} {% endif %}"><h3 style="padding-right: 1rem">Experiment 2</h3></a> -->
+
+        {% if not profile.isComplete %} 
+        <a href="{% url 'camera' %}">
+          <h3 style="padding-right: 1rem">Experiment 2</h3>
+        </a>
+        {% else %}
+        <h3 style="padding-right: 1rem">Experiment 2</h3>
+        {% endif %}
+        {% if profile.experiment_two_day != 0 %}<p> Day {{profile.experiment_two_day}} of 7 Complete</p>{% endif %}
       </div>
       <div class="letter">
         <div class="status">
-          <input type="checkbox" onclick="return false" {% if profile.experiment_two%} checked {% endif %}/>
+          <input type="checkbox" onclick="return false" {% if profile.isComplete%} checked {% endif %}/>
           {% if profile.experiment_two %} <h6>Complete</h6> {% else %} <h6> Not Complete</h6> {% endif %}
     
         </div>
       </div>
+
     </div>
     
   </div>

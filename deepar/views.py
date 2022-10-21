@@ -36,7 +36,7 @@ def index(request):
             os.mkdir(local_path)
 
         # Create a file in the local data directory to upload and download
-        today = date.today().strftime("%d-%m-%Y")
+        # today = date.today().strftime("%d-%m-%Y")
         # ar_file_name = today + ".png"
         # nar_file_name = today + "-unedited.png"
         ar_file_name = "edited.png"

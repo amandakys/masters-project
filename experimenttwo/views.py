@@ -1,22 +1,24 @@
 import base64
 from datetime import date
+import json
 import os
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 
-from deepar.utils import upload_file_to_azure
+from deepar.utils import delete_file, upload_file_to_azure
 from restaurant_review.models import Profile
 
 # Create your views here.
 
 def camera(request):
-    if request.method == 'GET': 
-        profile = Profile.objects.get(user=request.user)
+    profile = Profile.objects.get(user=request.user)
+    if request.method == 'GET':
         profile.experiment_two_day += 1
         profile.experiment_two_last_photo_date = date.today()
         profile.save()
-
+    
     if request.method == 'POST':
-        profile = Profile.objects.get(user=request.user)
+        #increment day and last photo taken variables 
+
 
         isAR = bool(request.META.get('HTTP_X_IS_AR'))
         img_data = request.body[22:]
@@ -55,14 +57,46 @@ def camera(request):
                     upload_file_to_azure(blob_name)
             else :
                 print (nar_file_name + ' already exists')
-
+        
 
     return render(request, 'deepar.html', {'profile': profile})
 
 def next(request):
+    # if request.method == 'GET': 
     profile = Profile.objects.get(user=request.user)
+    if profile.experiment_two_day == 6: 
+        return redirect('select_three')
+
+    # profile = Profile.objects.get(user=request.user)
 
     return render(request, 'next.html', {'profile': profile})
 
 def select(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        profile = Profile.objects.get(user=request.user)
+
+
+        print(data['edited'])
+        print(data['selection'])
+        print(data['numEditedSelected'])
+        profile.experiment_two_selection = data['selection']
+        profile.experiment_two_edited = data['edited']
+        profile.experiment_two = True
+        profile.experiment_two_num_edited_selected = data['numEditedSelected']
+        profile.save()
     return render(request, 'select_three.html')
+
+def finished(request):
+    if request.method == 'POST':
+        user = request.user.username
+        for i in range(1,7):
+
+            edited = user + '/experimenttwo/day' + str(i) + '-edited.png'
+            unedited = user + '/experimenttwo/day' + str(i) + '-unedited.png'
+            print('deleting edited')
+            delete_file(edited)
+            print('deleting unedited')
+            delete_file(unedited)
+
+    return render(request, 'finished.html')

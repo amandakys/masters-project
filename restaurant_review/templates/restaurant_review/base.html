@@ -6,22 +6,25 @@
         <title>Django web app with PostgreSQL in Azure - {% block title %}{% endblock %}</title>
         <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
         <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
-        <link rel="icon"href="{% static 'favicon.ico' %}">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+        <!-- <link rel="icon"href="{% static 'favicon.ico' %}"> -->
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>    
     {% endblock %}
 </head>
 <body>
     <nav class="navbar navbar-expand-md navbar-light fixed-top bg-light">
         <div class="container">
           <a class="navbar-brand" href="/">
-            <img src="{% static 'images/azure-icon.svg' %}" alt="" width="30" height="24" class="d-inline-block align-text-top">
+            <i class="bi bi-house-fill"></i>            
+            <!-- <img src="{% static 'images/azure-icon.svg' %}" alt="" width="30" height="24" class="d-inline-block align-text-top"> -->
             {% if user.is_authenticated %}
               Hi {{ user.username }}!
-              <p><a href="{% url 'logout' %}">Log Out</a></p>
+              <p style="margin-bottom: 0"><a href="{% url 'logout' %}">Log Out</a></p>
             {% else %}
               <p>You are not logged in</p>
-              <a href="{% url 'login' %}">Log In</a>
+              <a style="margin-bottom: 0" href="{% url 'login' %}">Log In</a>
             {% endif %}</a>
-            
+<!--             
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
@@ -37,7 +40,7 @@
                     </ul>
                 </li>
             </ul>
-          </div>
+          </div> -->
         </div>
       </nav>
 

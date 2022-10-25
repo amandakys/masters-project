@@ -24,17 +24,20 @@ class Review(models.Model):
     def __str__(self):
         return self.restaurant.name + " (" + self.review_date.strftime("%x") +")"
 
-class Profile(models.Model):
+class Profile(models.Model):        
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     experiment_one = models.BooleanField(default=False) #is experiment one complete
     experiment_one_result = models.BooleanField(default=True) #true = yes false = no 
-
     experiment_two = models.BooleanField(default=False) #is experiment two complete
-    experiment_two_day = models.IntegerField(default=0) #day cnt of experiment completed
+    experiment_two_day = models.IntegerField(default=0) #day cnt of photo taken
     experiment_two_last_photo_date = models.DateField(default=date(1999, 1, 1)) #date of last photo taken
-    # experiment_two_result = models.BooleanField()
+    experiment_two_selection = models.CharField(default='', max_length=10)
+    experiment_two_edited = models.CharField(default='', max_length=10)
+    experiment_two_num_edited_selected = models.IntegerField(default=0)
+
     isARCamera = models.BooleanField(default=True) #show participant AR camera
     showARImage = models.BooleanField(default=True) #show participant AR image 
+    tellIsAR = models.BooleanField(default=False) #tell participant camera is AR 
 
     @receiver(post_save, sender=User)
     def create_user_profile(sender, instance, created, **kwargs):
@@ -49,6 +52,7 @@ class Profile(models.Model):
     def isPhotoTaken(self):
         return date.today() == self.experiment_two_last_photo_date
 
-    @property 
-    def isComplete(self):
-        return self.experiment_two_day >= 7
+    # @property 
+    # def isComplete(self):
+    #     return self.experiment_two_day >= 7
+    

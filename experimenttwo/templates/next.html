@@ -19,20 +19,20 @@
 
 <div class="container">
     <div class="box">
-        <h1> Experiment 2: Day {{ profile.experiment_two_day }} of 7 Complete! </h1>
+
+        {% if profile.experiment_two %}
+        <h1>Thank you for completing Experiment Two!</h1>
+        <h3>That's it you're all done.</h3>
+
+        {% else %}
+
+        <h1> Experiment 2: Day {{ profile.experiment_two_day }} of 6 Complete! </h1>
         <!-- {% if profile.isPhotoTaken %} <h3> You've already taken a selfie today </h3> {% endif %} -->
-        {% if not profile.isComplete %}
         <h3> Please come back tomorrow to take another selfie </h3>
-        {% else %}
-        <h3> Thank you for completing Experiment Two </h3>
-
         {% endif %}
 
-        {% if profile.experiment_two_day == 7 %}
-        <button class="btn btn-primary" type="submit" onclick="location.href = select">Return to Home</button>
-        {% else %}
         <button class="btn btn-primary" type="submit" onclick="location.href = '/'">Return to Home</button>
-        {% endif %}
+        
     </div>
 </div>
 

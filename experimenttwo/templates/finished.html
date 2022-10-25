@@ -16,20 +16,24 @@
 {% endblock %}
 {% block content %}
 {% csrf_token %}
+
 <div class="container">
     <div class="box">
-        <h1> Thank you for completing Experiment One </h1>
-        <h6>If you would like to delete the photo you just took, click Delete Photo</h6>
+        <h1> Thank you for completing Experiment Two </h1>
+        <h6>If you would like to delete the photos you took over the last week, click Delete Photos</h6>
         <h6>(If you don't do it now, they will be automatically deleted on the completion of this research)</h6>
         <div style="display: flex; align-items:center">
-            <button class="btn btn-danger" id="delete-btn" type="submit" onclick="deletePhoto()">Delete Photo</button>
-            <button style="display: none"class="btn btn-success" id="success-btn" type="submit" onclick="location.href = '/'">Photo Successfully Deleted</button>
+            <button class="btn btn-danger" id="delete-btn" type="submit" onclick="deletePhoto()">Delete Photos</button>
+            <button style="display: none"class="btn btn-success" id="success-btn" type="submit" onclick="location.href = '/'">Photos Successfully Deleted</button>
         </div>
         
-        <h3 style="margin-top: 1rem"> Please return to the home page to continue onto Experiment Two </h3>
+
+        <h3> You're all done! Thank you for participating in my research </h3>
         <button class="btn btn-primary" type="submit" onclick="location.href = '/'">Return to Home</button>
     </div>
+    </div>
 </div>
+
 <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 <script type="text/javascript" src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 <script type="text/javascript">
@@ -51,4 +55,5 @@
 
     }
 </script>
+
 {% endblock %}

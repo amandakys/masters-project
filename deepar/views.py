@@ -7,7 +7,7 @@ import base64
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 
-from deepar.utils import azure_has_blob, upload_file_to_azure
+from deepar.utils import azure_has_blob, delete_file, upload_file_to_azure
 from restaurant_review.models import Profile
 from .models import Image
 from django.core.files.base import ContentFile
@@ -17,7 +17,11 @@ from django.views.generic.base import TemplateView
 
 # Create your views here.
 
-def index(request):
+def deepar(request):
+    if request.method == 'GET':
+        if request.user.is_authenticated: 
+            profile = Profile.objects.get(user=request.user)
+            return render(request, 'deepar.html', {'profile': profile})
 
     if request.method == 'POST':
         # this works
@@ -47,7 +51,7 @@ def index(request):
                 with open(os.path.abspath(local_path + '/' + ar_file_name), 'wb') as f: 
                     f.write(base64.decodebytes(img_data)) 
                     print("wrote to " + ar_file_name)
-                    upload_file_to_azure(ar_file_name, user)
+                    upload_file_to_azure(user + '/experimentone/' + ar_file_name)
 
             else :
                 print (ar_file_name + ' already exists')
@@ -56,7 +60,7 @@ def index(request):
                 with open(os.path.abspath(local_path + '/' + nar_file_name), 'wb') as f: 
                     f.write(base64.decodebytes(img_data)) 
                     print("wrote to " + nar_file_name)
-                    upload_file_to_azure(nar_file_name, user)
+                    upload_file_to_azure(user + '/experimentone/' + nar_file_name)
             else :
                 print (nar_file_name + ' already exists')
         
@@ -64,8 +68,8 @@ def index(request):
         # os.remove(upload_file_path)
         # os.rmdir(local_path)
 
-        return HttpResponse('post')
-
+        
+        # return HttpResponse('post')
     return render(request, 'deepar.html')
 
 def filters(request):
@@ -93,4 +97,11 @@ def select(request):
     return render(request, 'select.html')
 
 def complete(request):
+    if request.method == 'POST':
+        user = request.user.username
+        edited = user + '/experimentone/edited.png'
+        unedited = user + '/experimentone/unedited.png'
+        delete_file(edited)
+        delete_file(unedited)
+
     return render(request, 'complete.html')

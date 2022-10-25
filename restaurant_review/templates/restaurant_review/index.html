@@ -63,6 +63,7 @@
       display: flex;
       justify-content: left;
       align-items: center;
+      min-height: 1rem;
     }
     h6 {
       margin-bottom: 0;
@@ -74,21 +75,45 @@
 {% endblock %}
 {% block content %}
   <div class="container">
-    {% if not profile.isComplete %}
+    {% if not profile.experiment_two %}
     <h1>Tasks</h1>
+    <h4>Please complete the tasks in order</h4>
     {% else %}
     <h1>Thank You!</h1>
     <h2>You're all done</h2>
+    <hr>
     {% endif %}
 
-    <div class="wrapper">
+    <div class="wrapper"> 
+      <div class="letter">
+        
+        <a href="{% url 'index' %}">
+          <h4>Consent Form</h4>
+        </a>
+      </div>
+      <div class="letter">
+        <div class="status">
+          <input type="checkbox"  />
+          {% if profile.experiment_one %} <h6>Complete</h6> {% else %} <h6> Not Complete</h6> {% endif %}
+    
+        </div>
+      </div>
+
+      <hr><hr>
+      
+      <div class="letter">
+          <h3>Experiment 1</h3>
+      </div>
+      <div class="letter">
+      </div>
+
       <div class="letter">
         {% if not profile.experiment_one %} 
-        <a href="{% url 'index' %}">
-          <h3>Experiment 1</h3>
+        <a href="{% url 'deepar' %}">
+          <h4>Task</h4>
         </a>
         {% else %}
-          <h3>Experiment 1</h3>
+          <h4>Task</h4>
         {% endif %}
       </div>
       <div class="letter">
@@ -98,22 +123,59 @@
     
         </div>
       </div>
-      <div class="letter">
-        <!-- <a href="{% if profile.isPhotoTaken %} {% url 'next' %} {% else %} {% url 'camera' %} {% endif %}"><h3 style="padding-right: 1rem">Experiment 2</h3></a> -->
 
-        {% if not profile.isComplete %} 
-        <a href="{% url 'camera' %}">
-          <h3 style="padding-right: 1rem">Experiment 2</h3>
+      <hr><hr>
+
+      <div class="letter">
+          <h3>Experiment 2</h3>
+      </div>
+      <div class="letter">
+      </div>
+
+      <div class="letter">
+        
+        <a href="{% url 'index' %}">
+          <h4>Survey 1</h4>
         </a>
-        {% else %}
-        <h3 style="padding-right: 1rem">Experiment 2</h3>
-        {% endif %}
-        {% if profile.experiment_two_day != 0 %}<p> Day {{profile.experiment_two_day}} of 7 Complete</p>{% endif %}
       </div>
       <div class="letter">
         <div class="status">
-          <input type="checkbox" onclick="return false" {% if profile.isComplete%} checked {% endif %}/>
+          <input type="checkbox"  />
+          {% if profile.experiment_one %} <h6>Complete</h6> {% else %} <h6> Not Complete</h6> {% endif %}
+    
+        </div>
+      </div>
+
+      <div class="letter">
+        
+        {% if not profile.experiment_two %} 
+        <a href="{% if profile.isPhotoTaken %} {% url 'next' %} {% else %} {% url 'camera' %} {% endif %}"><h4 style="padding-right: 1rem">Task</h4></a>
+        <!-- <a href="{% url 'camera' %}">
+          <h4 style="padding-right: 1rem">Task</h4>
+        </a> -->
+        {% else %}
+        <h4 style="padding-right: 1rem">Task</h4>
+        {% endif %}
+        {% if profile.experiment_two_day != 0 %}<p> Day {{profile.experiment_two_day}} of 6 Complete</p>{% endif %}
+      </div>
+      <div class="letter">
+        <div class="status">
+          <input type="checkbox" onclick="return false" {% if profile.experiment_two %} checked {% endif %}/>
           {% if profile.experiment_two %} <h6>Complete</h6> {% else %} <h6> Not Complete</h6> {% endif %}
+    
+        </div>
+      </div>
+
+      <div class="letter">
+        
+        <a href="{% url 'index' %}">
+          <h4>Survey 2</h4>
+        </a>
+      </div>
+      <div class="letter">
+        <div class="status">
+          <input type="checkbox"  />
+          {% if profile.experiment_one %} <h6>Complete</h6> {% else %} <h6> Not Complete</h6> {% endif %}
     
         </div>
       </div>

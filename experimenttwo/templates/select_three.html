@@ -2,50 +2,91 @@
 {% extends "restaurant_review/base.html" %}
 {% block head %}
     {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
+
     <style>
-      #image {
-          max-width: 100%
-            /* max-height: 80%; */
-      }
-      #no-btn {
-        /* background-color: #dc3545; */
-        width: 100%;
-        border-radius: 0;
-        height: 80px;
+    .select-carousel {
+      width: 100%;
+      height: 100%; 
+    }
+    .slick-prev {
+      left: 1rem;
+      z-index: 1; 
 
-      }
+    }
 
-      #yes-btn {
-        /* background-color: #20c997; */
-        width: 100%;
-        border-radius: 0;
-        height: 80px;
+    .slick-next {
+      right: 1rem;
+    }
 
+    .slick-prev:before {
+      font-size: 40px;
 
-      }
-      .button-box {
-        position: fixed; 
-        bottom: 0; 
-        z-index: 2;
-        display: flex;
-        width: 100%;
-        border: none;
-      }
-      .image-wrapper {
-        margin: 5px; 
-      }
-      .question {
-        background-color: white;
-        position: fixed; 
-        top: 4.5rem; 
-        width: -webkit-fill-available;
+    }
+
+    .slick-next:before {
+      font-size: 40px;
+      
+    }
+
+    .question-box {
+
+      background-color: white;
+      position: fixed; 
+      top: 4.5rem; 
+      width: -webkit-fill-available;
+      padding: 0.5rem;
+      border-radius: 5px;
+      margin: 0px 2em; 
+      z-index: 3;
+
+    }
+    .question {
         display: flex; 
         align-content: center;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .select-box {
+        display: grid;
+        column-gap: 0.5rem; 
+        grid-auto-flow: column;
+        background-color: white;
+        /* opacity: 50%; */
+        position: fixed;
+        bottom: 2rem;
+        align-items: center;
+        height: 80px;
+        width: 200px; 
+        padding: 0.5rem 1rem; 
+        background-color: rgba(255,255,255,0.7);
+        left: 50%;
+        transform: translate(-50%, 0);
+      }
+      .selected {
+        background-color: #0d6efd;
+        color: white; 
+      }
+
+      p, h3, h5 {
+        margin-bottom: 0px
+      }
+
+      #selection-count {
+        margin-bottom: 0;
+        margin-right: 1rem;
+      }
+
+      #error {
+        margin-top: 2px; 
+        display: none;
         justify-content: center;
-        padding-top: 1rem;
-        padding-bottom: 0.5rem;
+        background-color: #dc3545;
         border-radius: 5px;
-        margin: 0px 2em; 
+        color: white; 
+        padding: 2px 0px;
       }
 
     </style>
@@ -53,59 +94,215 @@
 {% block content %}
 {% csrf_token %}
 
-    <div class="question">
-        <h5>Does this image look retouched? </h5>
-    </div>
-    <div class="image-wrapper">
-        {% if profile.showARImage %}
-        <img id="image" onerror="waitAndReload(event)" data-max-retry="5" data-retry="0"  src="https://mastersproject.blob.core.windows.net/media/{{user.username}}/experimentone/edited.png"/>
-        {% else %}
-        <img id="image" onerror="waitAndReload(event)" data-max-retry="5" data-retry="0"  src="https://mastersproject.blob.core.windows.net/media/{{user.username}}/experimentone/unedited.png"/>
-        {% endif %}
-    </div>
-  
-    <!-- <img onerror="waitAndReload(event)" data-max-retry="5" data-retry="0"  src="https://mastersproject.blob.core.windows.net/media/{{user.username}}/experimentone/edited.png"/>
-    <img onerror="waitAndReload(event)" data-max-retry="5" data-retry="0" src="https://mastersproject.blob.core.windows.net/media/{{user.username}}/experimentone/unedited.png"/> -->
-    <div class="button-box">
-            <button id="no-btn" onclick="sendResult(false)" class="btn btn-danger">No</button>
-            <button id="yes-btn" onclick="sendResult(true)" class="btn btn-success">Yes</button>
-    </div>
+<div class="question-box" style="display: grid; grid-template-columns: auto;">
+  <h5 style=" display: flex; align-items: center; justify-content: center; text-align:center">Select 3 pictures you feel best represent you </h5>
+  <div style="display: flex; align-items:center; justify-content: center; margin-top: 5px">
+      <p id="selection-count">0 of 3 selected</p>
+      <button id="submit-btn" class="btn btn-primary" onclick="submitSelection()" disabled> Submit </button>
+  </div>
+  <div id="error">
+    <i class="bi bi-exclamation-triangle-fill"></i>
+    <p>You've already selected 3 images, to select this one, deselect another. If you're happy with your selection press submit.</p>    
+  </div>
+</div>
+   <div id="carousel" class="select-carousel">
+    <img id="image" onerror="waitAndReload(event)" data-max-retry="5" data-retry="0"  src=""/>
+    <img id="image" onerror="waitAndReload(event)" data-max-retry="5" data-retry="0"  src=""/>
+    <img id="image" onerror="waitAndReload(event)" data-max-retry="5" data-retry="0"  src=""/>
+    <img id="image" onerror="waitAndReload(event)" data-max-retry="5" data-retry="0"  src=""/>
+    <img id="image" onerror="waitAndReload(event)" data-max-retry="5" data-retry="0"  src=""/>
+    <img id="image" onerror="waitAndReload(event)" data-max-retry="5" data-retry="0"  src=""/>
+  </div>
 
-    <script type="text/javascript">
-        console.log("showARImage: " + "{{ profile.showARImage }}")
+  <div id="select-box" onclick="handleClick()" class="select-box">
+    <i style="font-size: 40px" class="bi bi-check-lg"></i>
+    <h3 id="select-text"> Select </h3>
+  </div>
+  <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+  <script type="text/javascript" src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+  <script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+  <script type="text/javascript">
 
-        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    const photos = [1,2,3,4,5,6]
+    const half = photos.length/2; 
 
-        function sendResult(result) {
-            fetch('/experimentone/select/', {
-                method: 'POST',
-                mode: 'cors',
-                // body: result, 
-                headers: {
-                    'X-CSRFToken': csrftoken,
-                    'X-Result': result ? 'True': ''
+    function generateRandomHalf() {
+      const options = [...photos];
+      const randomSelection = []
 
-                }
-            })
-            location.href = "{% url 'complete'%}"
+      for (var i = 0; i<half; i++) {
+        const index = Math.floor(Math.random() * options.length) 
+        randomSelection.push(options[index])
+        options.splice(index, 1)
+      }
+      return randomSelection;
+    }
+
+    function shuffle(array) {
+      let currentIndex = array.length,  randomIndex;
+
+      // While there remain elements to shuffle.
+      while (currentIndex != 0) {
+
+        // Pick a remaining element.
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+
+        // And swap it with the current element.
+        [array[currentIndex], array[randomIndex]] = [
+          array[randomIndex], array[currentIndex]];
+      }
+      return array;
+    }
+
+    function generateImages() {
+      console.log('generate');
+      const isEdited = generateRandomHalf();
+      edited = isEdited; 
+      const imageOrder = shuffle(photos);
+      console.log(imageOrder, 'imageOrder')
+      console.log(edited, 'edited')
+      const carousel = document.getElementById('carousel');
+      const images= carousel.getElementsByTagName('img');
+      console.log(images, 'images');
+      for(var i = 0; i < images.length; i++ ) {
+        images[i].src = `https://mastersproject.blob.core.windows.net/media/{{user.username}}/experimenttwo/day${imageOrder[i]}-${edited.includes(imageOrder[i]) ? 'edited': 'unedited'}.png`
+      }
+    }
+
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    
+    let selected = [];
+    let edited = [];
+    console.log(selected);
+
+    var currentSlide; 
+
+    // var currentSlide = $('.select-carousel').slick('slickCurrentSlide');
+    
+    function handleClick() {
+      var currentSlide = $('.select-carousel').slick('slickCurrentSlide');
+      let box = document.getElementById('select-box')
+      let text = document.getElementById('select-text')
+      let count = document.getElementById('selection-count')
+      let submit = document.getElementById('submit-btn')
+
+      if (selected.includes(currentSlide)) {
+        //remove from selected
+        const index = selected.indexOf(currentSlide);
+        selected.splice(index, 1)
+        console.log(selected)
+        box.classList.remove('selected')
+        text.innerText = 'Select'
+        count.innerText = `${selected.length} of 3 selected` 
+
+        let error = document.getElementById('error')
+          error.style.display = 'none';
+
+
+        if (selected.length != 3) {
+          submit.disabled = true; 
         }
-        function waitAndReload(event) {
-    
-            const originalSrc = event.target.src;
-    
-            if (parseInt(event.target.getAttribute('data-retry'), 10) !== parseInt(event.target.getAttribute('data-max-retry'), 10)) {
-    
-                event.target.setAttribute('data-retry', parseInt(event.target.getAttribute('data-retry'), 10) + 1);
-    
-                // event.target.src = '/assets/images/placeholder.png';
-    
-                setTimeout(function () {
-                    event.target.src = originalSrc;
-                }, 500);
-            } else {
-                event.target.src = 'https://placeimg.com/200/300/animals';
-            }
-        }
+      } else {
+        //add to selected 
 
-    </script>
+        if (selected.length == 3) {
+          let error = document.getElementById('error')
+          error.style.display = 'flex';
+          return;
+
+        }
+        selected.push(currentSlide)
+        box.classList.add('selected')
+        console.log(selected)
+        text.innerText = 'Selected'
+        count.innerText = `${selected.length} of 3 selected` 
+
+        if (selected.length == 3) {
+          submit.disabled = false; 
+        }
+      }
+    } 
+    
+    function sortNumArray(a, b) {
+      return a - b;
+    }
+    function submitSelection() {
+      // shift selected indexes up by one
+      selected = selected.map(s => s+1);
+      selected.sort(sortNumArray)
+      edited.sort(sortNumArray)
+
+      let editedSelectedCnt = 0;
+
+      selected.forEach((s) => {
+        if (edited.includes(s)) editedSelectedCnt++;
+      })
+
+      console.log(editedSelectedCnt)
+
+      fetch('/experimenttwo/select/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrftoken,
+        },
+        body: JSON.stringify({ selection: selected, edited: edited, numEditedSelected: editedSelectedCnt })
+      })
+
+      location.href = "{% url 'finished'%}"
+    }
+
+    
+    function waitAndReload(event) {
+
+      const originalSrc = event.target.src;
+
+      if (parseInt(event.target.getAttribute('data-retry'), 10) !== parseInt(event.target.getAttribute('data-max-retry'), 10)) {
+
+          event.target.setAttribute('data-retry', parseInt(event.target.getAttribute('data-retry'), 10) + 1);
+
+          // event.target.src = '/assets/images/placeholder.png';
+
+          setTimeout(function () {
+              event.target.src = originalSrc;
+          }, 500);
+      } else {
+          event.target.src = 'https://placeimg.com/200/300/animals';
+      }
+    }
+
+
+    $(document).ready(function(){
+      $('.select-carousel').slick({
+        slidesToShow: 1, 
+        dots: false, 
+        apppendArrow: true,
+        infinite: false, 
+
+      });
+    });
+
+    $(document).ready(function(){
+      generateImages(); 
+    }); 
+
+    $('.select-carousel').on('afterChange', function(event, slick, currentSlide){
+      let box = document.getElementById('select-box')
+      let text = document.getElementById('select-text')
+          if (selected.includes(currentSlide)) {
+
+            box.classList.add("selected")
+            text.innerText = 'Selected'
+
+          } else {
+            box.classList.remove("selected")
+            text.innerText = 'Select'
+          }
+    });
+
+
+</script>
+
 {% endblock %}  

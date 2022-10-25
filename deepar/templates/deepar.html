@@ -151,13 +151,13 @@
 {% endblock %}
 {% block content %}
 {% csrf_token %}
-<div style="display: flex">
-
-  <canvas class="deepar" id="deepar-canvas" oncontextmenu="event.preventDefault()"></canvas>
-  <canvas style="display: none" class="deepar" id="deepar-canvas-unedited" oncontextmenu="event.preventDefault()"></canvas>
-</div>
-{% url 'index' as experimentone %}
+{% url 'deepar' as experimentone %}
 {% url 'camera' as experimenttwo %}
+
+<div style="display: flex">
+    <canvas {% if not profile.isARCamera %} style="display: none" {%endif%} class="deepar" id="deepar-canvas" oncontextmenu="event.preventDefault()"></canvas>
+    <canvas {% if profile.isARCamera %} style="display: none" {%endif%} class="deepar" id="deepar-canvas-unedited" oncontextmenu="event.preventDefault()"></canvas>
+</div>
 
 
     <button id="photo-btn" onclick="takePhoto()">Take photo</button>

@@ -1,3 +1,4 @@
+from datetime import date
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
@@ -14,16 +15,34 @@ def index(request):
     print('Request for index page received')
     if request.user.is_authenticated: 
         profile = Profile.objects.get(user=request.user)
+        # profile.experiment_two_day = 0
+        # profile.experiment_two_last_photo_date = date(1999,1,1)
+        # profile.save()
         return render(request, 'restaurant_review/index.html', {'profile': profile})
     else: 
         return redirect('/account/login/')
 
 def results(request):
-    User = get_user_model()
-    users = User.objects.all()
-    return render(request, 'restaurant_review/results.html', {'all_users': users})
+    # User = get_user_model()
+    # users = User.objects.all()
+    profiles = Profile.objects.all()
+    # print(User.objects.values())
+    return render(request, 'restaurant_review/results.html', {'all_profiles': profiles})
+
+    # return render(request, 'restaurant_review/results.html', {'all_users': users, 'all_profiles': profiles})
 
 
+
+# def results(request):
+#     # User = get_user_model()
+#     all_users = Profile.objects.all()
+#     fieldnames = ['experiment_two']
+#     fields = [all_users[0]._meta.get_field(field) for field in fieldnames]
+#     context = {
+#         'rows': all_users,
+#         'cols': fields,
+#     }
+#     return render(request, 'restaurant_review/results.html', context=context)
 
 
 # def details(request, id):

@@ -60,4 +60,9 @@ def azure_has_blob(blob_name):
     
     return hasBlob
 
+def delete_file(blob_name):
+    blob_service_client = createBlobConnectionClient()
+    container_client = blob_service_client.get_container_client("media")
+    container_client.delete_blob(blob=blob_name)
+
 

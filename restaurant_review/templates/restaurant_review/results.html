@@ -1,25 +1,32 @@
 {% extends "restaurant_review/base.html" %}
+<block
 {% block content %}
 <div class="container" style="padding-top: 4.5rem">
     {% if user.is_superuser %}
     <h1> Results</h1>
     <h3> Experiment 1</h3>
+
     <table class="table">
         <thead>
             <th>Participant</th>
             <th>Shown AR Camera</th>
+            <th>Tell is AR </th>
             <th>Shown AR Image </th>
+            <th>Completed</th>
             <th>Selection</th>
             <th>Correct? </th>
+
         </thead>
         <tbody>
-            {% for user in all_users %}
+            {% for usr in all_profiles %}
                 <tr>
-                    <td>{{user.username}}</td>
-                    <td>{% if user.isARCamera %} YES {% else %} NO {% endif %}</td>
-                    <td>{% if user.showARImage %} YES {% else %} NO {% endif %}</td>
-                    <td>{% if user.experiment_one_result %} YES {% else %} NO {% endif %}</td>
-                    <td>{% if user.experiment_one_result == user.showARImage %} YES {% else %} NO {% endif %}</td>
+                    <td>{{usr.user.username}}</td>
+                    <td>{% if usr.isARCamera %} YES {% else %} NO {% endif %}</td>
+                    <td>{% if usr.tellIsAR %} YES {% else %} NO {% endif %}</td>
+                    <td>{% if usr.showARImage %} YES {% else %} NO {% endif %}</td>
+                    <td>{% if usr.experiment_one %} YES {% else %} NO {% endif %}</td>
+                    <td>{% if usr.experiment_one_result %} YES {% else %} NO {% endif %}</td>
+                    <td>{% if usr.experiment_one_result == usr.showARImage %} YES {% else %} NO {% endif %}</td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -30,12 +37,22 @@
         <thead>
             <th>Participant</th>
             <th>Shown AR Camera</th>
+            <th>Tell is AR </th>
+            <th>Completed</th>
+            <th>Edited Images</th>
+            <th>Selected Images</th>
+            <th>Num Edited Selected</th>
         </thead>
         <tbody>
-            {% for user in all_users %}
+            {% for usr in all_profiles %}
                 <tr>
-                    <td>{{user.username}}</td>
-                    <td>{% if user.isARCamera %} YES {% else %} NO {% endif %}</td>
+                    <td>{{usr.user.username}}</td>
+                    <td>{% if usr.isARCamera %} YES {% else %} NO {% endif %}</td>
+                    <td>{% if usr.tellIsAR %} YES {% else %} NO {% endif %}</td>
+                    <td>{% if usr.experiment_two %} YES {% else %} NO {% endif %}</td>
+                    <td>{{usr.experiment_two_edited}}</td>
+                    <td>{{usr.experiment_two_selection}}</td>
+                    <td>{{usr.experiment_two_num_edited_selected}}</td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -44,5 +61,21 @@
     <h1> Sorry you don't have permission to view this page </h1>
     {% endif %}
 </div>
+<script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+<script type="text/javascript">
+    function calculateResults() {
+        console.log(all, 'all')
+        const edited = "{{user.experiment_two_edited}}"
+        const selected = "{{user.experiment_two_selected}}"
+        console.log(edited, edited)
+        const result = document.getElementById('results');
+        // result.setInnerText = 
+    };
+
+    $(document).ready(function(){
+        calculateResults(); 
+    });
+</script>
 
 {% endblock %}
